@@ -21,27 +21,53 @@ A comprehensive, feature-rich admin dashboard built with React.js, Redux Toolkit
 ![Dashboard - Dark Mode](src/assets/screenshots/dashboard-page-dark.png)
 *The same dashboard in dark mode for an alternative visual experience*
 
+### Dashboard with Collapsed Sidebar
+![Dashboard - Collapsed Sidebar](src/assets/screenshots/dashboard-page-sidebar-collabsed.png)
+*Dashboard with collapsed sidebar for maximum content space*
+
 ### Users Management
-![Users Management](src/assets/screenshots/users-page-1.png)
+![Users Management](src/assets/screenshots/users-page.png)
 *User management interface with sorting, filtering, and actions*
 
-![Users Management - Search](src/assets/screenshots/users-page-search.png)
-*Advanced search functionality for users*
-
-![Users Management - Dark Mode](src/assets/screenshots/users-page-dark.png)
-*User management in dark mode*
-
 ### Notifications Center
-*[Add screenshot here]*
+![Notifications Center](src/assets/screenshots/notifications-page.png)
 *Centralized notifications center with filtering and management options*
 
 ### Communication Tools
-*[Add screenshots here]*
-*Communication hub with messaging, announcements, and team spaces*
+
+#### Messages
+![Communication - Messages](src/assets/screenshots/communication-message-page.png)
+*Direct messaging system with conversation history*
+
+#### Announcements
+![Communication - Announcements](src/assets/screenshots/communication-annoucements-page.png)
+*System-wide and targeted announcement management*
+
+#### Team Spaces
+![Communication - Team Spaces](src/assets/screenshots/communication-team-spaces-page.png)
+*Collaborative spaces for team discussions*
+
+#### Email & SMS Integration
+![Communication - Email/SMS Integration](src/assets/screenshots/communication-email-sms-page.png)
+*Email and SMS template management and delivery options*
 
 ### Task Management Views
-*[Add screenshots here]*
-*Multiple views for task and project management*
+
+#### Kanban Board
+![Task Management - Kanban Board](src/assets/screenshots/task-management-kanban-board.png)
+*Visual drag-and-drop task management by status*
+
+#### Task List
+![Task Management - Task List](src/assets/screenshots/task-management-task-list.png)
+*Filterable tabular view of all tasks and projects*
+
+#### Calendar View
+![Task Management - Calendar View](src/assets/screenshots/task-management-calendar-view.png)
+*Timeline visualization of tasks and deadlines*
+
+### Advanced Analytics
+![Advanced Analytics](src/assets/screenshots/advanced-analytics-page.png)
+*Enhanced data visualization with real-time updates and filtering*
 
 ## Features
 
@@ -190,36 +216,55 @@ The dashboard integrates with multiple data sources:
 
 ## Screenshots Gallery
 
-*[Additional screenshots can be added here]*
+### Settings Pages
 
-### Gestion des utilisateurs
-![Page des utilisateurs](src/assets/screenshots/users-page-1.png)
-*Liste des utilisateurs avec options pour modifier leur statut et les supprimer*
+#### Settings (Light Mode)
+![Settings - Light Mode](src/assets/screenshots/settings-page.png)
+*Settings page with multiple tabs for customizing the user experience*
 
-![Détails des utilisateurs](src/assets/screenshots/users-page-2.png)
-*Vue détaillée des informations utilisateurs avec pagination*
+#### Settings (Dark Mode)
+![Settings - Dark Mode](src/assets/screenshots/settings-page-dark.png)
+*Settings page in dark mode, showing design consistency across themes*
 
-### Recherche d'utilisateurs
-![Recherche d'utilisateurs](src/assets/screenshots/users-page-search.png)
-*Fonction de recherche permettant de filtrer rapidement les utilisateurs*
+### Dashboard Views
 
-### Mode sombre pour la gestion des utilisateurs
-![Page des utilisateurs - Mode sombre](src/assets/screenshots/users-page-dark.png)
-*Interface de gestion des utilisateurs en mode sombre*
+#### Dashboard with Collapsed Sidebar
+![Dashboard - Sidebar Collapsed](src/assets/screenshots/dashboard-page-sidebar-collabsed.png)
+*Dashboard with collapsed sidebar for maximum content space*
 
-### Page des paramètres (Mode clair)
-![Page des paramètres - Mode clair](src/assets/screenshots/settings-page.png)
-*Page des paramètres avec différents onglets pour personnaliser l'expérience utilisateur*
+#### Dashboard in Dark Mode
+![Dashboard - Dark Mode](src/assets/screenshots/dashboard-page-dark.png)
+*Dashboard with dark theme activated*
 
-### Page des paramètres (Mode sombre)
-![Page des paramètres - Mode sombre](src/assets/screenshots/settings-page-dark.png)
-*Page des paramètres en mode sombre, montrant la cohérence du design dans tous les thèmes*
+### Notifications & Communications
+
+#### Notifications Center
+![Notifications Center](src/assets/screenshots/notifications-page.png)
+*Centralized notifications with filtering and action options*
+
+#### Team Communication
+![Team Spaces](src/assets/screenshots/communication-team-spaces-page.png)
+*Collaborative team spaces for discussions and file sharing*
+
+#### Announcements System
+![Announcements](src/assets/screenshots/communication-annoucements-page.png)
+*Company-wide and targeted announcements*
+
+### Advanced Features
+
+#### Task Management - Calendar
+![Task Calendar](src/assets/screenshots/task-management-calendar-view.png)
+*Calendar view for visualizing tasks and deadlines*
+
+#### Advanced Analytics Dashboard
+![Analytics Dashboard](src/assets/screenshots/advanced-analytics-page.png)
+*Advanced data visualization with interactive filtering*
 
 ## Fonctionnalités implémentées
 
 - [x] **Authentification**: Login/Logout avec redirection protégée
 - [x] **Interface Admin Dashboard**: Layout avec Sidebar + Topbar
-- [x] **Navigation**: Entre /dashboard, /users, /settings et /login
+- [x] **Navigation**: Navigation complète entre toutes les sections
 - [x] **Gestion des utilisateurs**:
   - [x] Intégration Redux + AsyncThunk pour récupérer les utilisateurs
   - [x] Affichage des utilisateurs dans un tableau
@@ -230,6 +275,25 @@ The dashboard integrates with multiple data sources:
 - [x] **Mode sombre**: Implémentation complète avec ThemeContext
 - [x] **Tableau de bord**: Statistiques, graphiques et activités récentes
 - [x] **Page de paramètres**: Onglets multiples avec sauvegarde des préférences
+- [x] **Centre de notifications**:
+  - [x] Affichage des notifications non lues
+  - [x] Filtres par type et statut
+  - [x] Compteur de badges dans la sidebar
+  - [x] Actions rapides depuis les notifications
+- [x] **Gestion des tâches**:
+  - [x] Vue Kanban avec colonnes de statut
+  - [x] Vue Liste avec filtres et recherche
+  - [x] Vue Calendrier pour visualiser les échéances
+  - [x] Organisation par projets
+- [x] **Outils de communication**:
+  - [x] Messagerie interne
+  - [x] Système d'annonces
+  - [x] Espaces d'équipe
+  - [x] Intégration Email et SMS
+- [x] **Analytique avancée**:
+  - [x] Graphiques interactifs
+  - [x] Contrôles de filtrage avancés
+  - [x] Visualisations en temps réel
 
 ## Déploiement sur Vercel
 
