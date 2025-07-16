@@ -14,11 +14,11 @@ A comprehensive, feature-rich admin dashboard built with React.js, Redux Toolkit
 *Clean login interface with email and password validation*
 
 ### Dashboard (Light Mode)
-![Dashboard - Light Mode](src/assets/screenshots/dashboard-page.png)
+![Dashboard - Light Mode](src/assets/screenshots/dashboard-page-new.png)
 *Dashboard overview in light mode with key statistics, growth chart, and recent activities*
 
 ### Dashboard (Dark Mode)
-![Dashboard - Dark Mode](src/assets/screenshots/dashboard-page-dark.png)
+![Dashboard - Dark Mode](src/assets/screenshots/dashboard-page-dark-new.png)
 *The same dashboard in dark mode for an alternative visual experience*
 
 ### Dashboard with Collapsed Sidebar
@@ -219,11 +219,11 @@ The dashboard integrates with multiple data sources:
 ### Settings Pages
 
 #### Settings (Light Mode)
-![Settings - Light Mode](src/assets/screenshots/settings-page.png)
+![Settings - Light Mode](src/assets/screenshots/settings-page-new.png)
 *Settings page with multiple tabs for customizing the user experience*
 
 #### Settings (Dark Mode)
-![Settings - Dark Mode](src/assets/screenshots/settings-page-dark.png)
+![Settings - Dark Mode](src/assets/screenshots/settings-page-dark-new.png)
 *Settings page in dark mode, showing design consistency across themes*
 
 ### Dashboard Views
@@ -233,7 +233,7 @@ The dashboard integrates with multiple data sources:
 *Dashboard with collapsed sidebar for maximum content space*
 
 #### Dashboard in Dark Mode
-![Dashboard - Dark Mode](src/assets/screenshots/dashboard-page-dark.png)
+![Dashboard - Dark Mode](src/assets/screenshots/dashboard-page-dark-new.png)
 *Dashboard with dark theme activated*
 
 ### Notifications & Communications
