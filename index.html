@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <!-- Include Tailwind CSS directly from CDN for immediate styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include dark mode CSS -->
+    <link rel="stylesheet" href="/darkmode.css" />
+    <script>
+      // Configure Tailwind with dark mode support
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#ebf5ff',
+                100: '#e1efff',
+                200: '#c3deff',
+                300: '#a4cafe',
+                400: '#76a9fa',
+                500: '#3f83f8',
+                600: '#1c64f2',
+                700: '#1a56db',
+                800: '#1e429f',
+                900: '#233876',
+              },
+              gray: {
+                50: '#f9fafb',
+                100: '#f4f5f7',
+                200: '#e5e7eb',
+                300: '#d2d6dc',
+                400: '#9fa6b2',
+                500: '#6b7280',
+                600: '#4b5563',
+                700: '#374151',
+                800: '#252f3f',
+                900: '#161e2e',
+              },
+              dark: {
+                100: '#1e293b',
+                200: '#1a1f29',
+                300: '#111827',
+                400: '#0f172a',
+                500: '#0b111f',
+                600: '#070d18',
+                700: '#030712',
+                800: '#010409',
+                900: '#000000',
+              }
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

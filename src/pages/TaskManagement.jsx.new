@@ -1,0 +1,736 @@
+import React, { useState, useEffect } from 'react';
+import { cn } from '../lib/utils';
+import moment from 'moment';
+
+// Sample initial data for tasks
+const initialTasks = [
+  { id: 'task-1', content: 'Update user dashboard UI', assignedTo: 'Alice Johnson', dueDate: new Date(2025, 6, 15), priority: 'high', status: 'todo' },
+  { id: 'task-2', content: 'Fix login page responsiveness', assignedTo: 'Bob Smith', dueDate: new Date(2025, 6, 16), priority: 'medium', status: 'todo' },
+  { id: 'task-3', content: 'Add data visualization charts', assignedTo: 'Carlos Diaz', dueDate: new Date(2025, 6, 14), priority: 'high', status: 'inProgress' },
+  { id: 'task-4', content: 'Implement dark mode toggle', assignedTo: 'Dana Lee', dueDate: new Date(2025, 6, 18), priority: 'low', status: 'inProgress' },
+  { id: 'task-5', content: 'Create admin documentation', assignedTo: 'Eddie Wilson', dueDate: new Date(2025, 6, 17), priority: 'medium', status: 'review' },
+  { id: 'task-6', content: 'Set up analytics tracking', assignedTo: 'Fiona Chen', dueDate: new Date(2025, 6, 19), priority: 'high', status: 'done' },
+  { id: 'task-7', content: 'User testing coordination', assignedTo: 'Greg Taylor', dueDate: new Date(2025, 6, 20), priority: 'medium', status: 'done' },
+];
+
+// Sample users for assignment
+const users = [
+  { id: 'user-1', name: 'Alice Johnson', avatar: '👩‍💼', role: 'Designer' },
+  { id: 'user-2', name: 'Bob Smith', avatar: '👨‍💻', role: 'Developer' },
+  { id: 'user-3', name: 'Carlos Diaz', avatar: '👨‍🔧', role: 'DevOps' },
+  { id: 'user-4', name: 'Dana Lee', avatar: '👩‍💻', role: 'Developer' },
+  { id: 'user-5', name: 'Eddie Wilson', avatar: '📝', role: 'Content' },
+  { id: 'user-6', name: 'Fiona Chen', avatar: '📊', role: 'Analyst' },
+  { id: 'user-7', name: 'Greg Taylor', avatar: '🧪', role: 'QA' },
+];
+
+const TaskManagement = () => {
+  // States
+  const [tasks, setTasks] = useState([]);
+  const [columnTasks, setColumnTasks] = useState({
+    'todo': [],
+    'inProgress': [],
+    'review': [],
+    'done': [],
+  });
+  const [activeTab, setActiveTab] = useState('kanban');
+  const [newTask, setNewTask] = useState({
+    content: '',
+    assignedTo: '',
+    dueDate: '',
+    priority: 'medium',
+    status: 'todo'
+  });
+  const [events, setEvents] = useState([]);
+  const [editingTask, setEditingTask] = useState(null);
+
+  // Initialize tasks and columns
+  useEffect(() => {
+    setTasks(initialTasks);
+    
+    const columnMapping = {
+      'todo': [],
+      'inProgress': [],
+      'review': [],
+      'done': []
+    };
+
+    initialTasks.forEach(task => {
+      if (columnMapping[task.status]) {
+        columnMapping[task.status].push(task);
+      }
+    });
+
+    setColumnTasks({
+      'todo': columnMapping.todo,
+      'inProgress': columnMapping.inProgress,
+      'review': columnMapping.review,
+      'done': columnMapping.done,
+    });
+  }, []);
+
+  // Handle form input changes for new task
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewTask(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Add new task
+  const handleAddTask = () => {
+    if (!newTask.content.trim()) return;
+
+    const taskId = `task-${Date.now()}`;
+    const createdTask = {
+      id: taskId,
+      content: newTask.content,
+      assignedTo: newTask.assignedTo,
+      dueDate: new Date(newTask.dueDate),
+      priority: newTask.priority,
+      status: newTask.status
+    };
+
+    setTasks(prev => [...prev, createdTask]);
+    
+    // Update column tasks
+    setColumnTasks(prev => {
+      const columnTasksCopy = { ...prev };
+      columnTasksCopy[newTask.status] = [...columnTasksCopy[newTask.status], createdTask];
+      return columnTasksCopy;
+    });
+
+    // Reset form
+    setNewTask({
+      content: '',
+      assignedTo: '',
+      dueDate: '',
+      priority: 'medium',
+      status: 'todo'
+    });
+  };
+
+  // Handle task editing
+  const startEditingTask = (task) => {
+    setEditingTask({
+      ...task,
+      dueDate: task.dueDate ? moment(task.dueDate).format('YYYY-MM-DD') : ''
+    });
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditingTask(prev => ({ ...prev, [name]: value }));
+  };
+
+  const saveTaskEdit = () => {
+    const editedTask = {
+      ...editingTask,
+      dueDate: new Date(editingTask.dueDate)
+    };
+
+    // Update task in tasks array
+    setTasks(prev => prev.map(task => 
+      task.id === editedTask.id ? editedTask : task
+    ));
+
+    // If task status changed, update column tasks
+    const taskFound = tasks.find(t => t.id === editedTask.id);
+    if (taskFound && taskFound.status !== editedTask.status) {
+      setColumnTasks(prev => {
+        const columnTasksCopy = { ...prev };
+        
+        // Remove from old column
+        columnTasksCopy[taskFound.status] = columnTasksCopy[taskFound.status].filter(t => t.id !== editedTask.id);
+        
+        // Add to new column
+        columnTasksCopy[editedTask.status] = [...columnTasksCopy[editedTask.status], editedTask];
+        
+        return columnTasksCopy;
+      });
+    } else {
+      // Just update the task in its current column
+      setColumnTasks(prev => {
+        const columnTasksCopy = { ...prev };
+        columnTasksCopy[editedTask.status] = columnTasksCopy[editedTask.status].map(t => 
+          t.id === editedTask.id ? editedTask : t
+        );
+        return columnTasksCopy;
+      });
+    }
+
+    setEditingTask(null);
+  };
+
+  // Delete task
+  const deleteTask = (taskId) => {
+    const taskToDelete = tasks.find(t => t.id === taskId);
+    if (!taskToDelete) return;
+
+    // Remove from tasks array
+    setTasks(prev => prev.filter(task => task.id !== taskId));
+    
+    // Remove from column tasks
+    setColumnTasks(prev => {
+      const columnTasksCopy = { ...prev };
+      columnTasksCopy[taskToDelete.status] = columnTasksCopy[taskToDelete.status].filter(t => t.id !== taskId);
+      return columnTasksCopy;
+    });
+  };
+
+  // Move task between columns (simplified version of drag-and-drop)
+  const moveTask = (taskId, targetStatus) => {
+    const taskToMove = tasks.find(t => t.id === taskId);
+    if (!taskToMove || taskToMove.status === targetStatus) return;
+
+    const updatedTask = { ...taskToMove, status: targetStatus };
+    
+    // Update task in tasks array
+    setTasks(prev => prev.map(task => 
+      task.id === taskId ? updatedTask : task
+    ));
+    
+    // Update column tasks
+    setColumnTasks(prev => {
+      const columnTasksCopy = { ...prev };
+      
+      // Remove from old column
+      columnTasksCopy[taskToMove.status] = columnTasksCopy[taskToMove.status].filter(t => t.id !== taskId);
+      
+      // Add to new column
+      columnTasksCopy[targetStatus] = [...columnTasksCopy[targetStatus], updatedTask];
+      
+      return columnTasksCopy;
+    });
+  };
+
+  // Priority class names for styling
+  const getPriorityClass = (priority) => {
+    switch (priority) {
+      case 'high':
+        return 'border-l-4 border-red-500';
+      case 'medium':
+        return 'border-l-4 border-yellow-500';
+      case 'low':
+        return 'border-l-4 border-green-500';
+      default:
+        return '';
+    }
+  };
+
+  // Render task card
+  const renderTaskCard = (task, showActions = true) => (
+    <div 
+      key={task.id}
+      className={cn(
+        "bg-white dark:bg-gray-800 p-3 rounded-md shadow mb-2",
+        getPriorityClass(task.priority)
+      )}
+    >
+      <div className="flex justify-between items-start">
+        <h4 className="font-medium text-gray-900 dark:text-gray-100">{task.content}</h4>
+        {showActions && (
+          <div className="flex space-x-1">
+            <button 
+              onClick={() => startEditingTask(task)}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+            </button>
+            <button 
+              onClick={() => deleteTask(task.id)}
+              className="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-2 text-sm">
+        {task.dueDate && (
+          <div className="flex items-center text-gray-600 dark:text-gray-400 mb-1">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+            </svg>
+            {moment(task.dueDate).format('MMM DD, YYYY')}
+          </div>
+        )}
+        
+        {task.assignedTo && (
+          <div className="flex items-center text-gray-600 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            </svg>
+            {task.assignedTo}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // Simplified Kanban board rendering
+  const renderKanbanBoard = () => {
+    const columnTitles = {
+      'todo': 'To Do',
+      'inProgress': 'In Progress',
+      'review': 'Review',
+      'done': 'Done'
+    };
+    
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {Object.keys(columnTasks).map(columnKey => (
+          <div key={columnKey} className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex justify-between items-center">
+              {columnTitles[columnKey]}
+              <span className="text-xs bg-gray-200 dark:bg-gray-700 rounded-full px-2 py-0.5">
+                {columnTasks[columnKey].length}
+              </span>
+            </h3>
+            
+            <div className="min-h-[200px]">
+              {columnTasks[columnKey].map(task => (
+                <div key={task.id} className="mb-2">
+                  {renderTaskCard(task)}
+                  
+                  {/* Simple move buttons instead of drag and drop */}
+                  <div className="flex justify-center mt-1 space-x-1">
+                    {columnKey !== 'todo' && (
+                      <button 
+                        onClick={() => moveTask(task.id, 'todo')} 
+                        className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-md hover:bg-blue-200 dark:hover:bg-blue-800/40"
+                      >
+                        To Do
+                      </button>
+                    )}
+                    {columnKey !== 'inProgress' && (
+                      <button 
+                        onClick={() => moveTask(task.id, 'inProgress')}
+                        className="text-xs bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 px-2 py-0.5 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-800/40"
+                      >
+                        In Progress
+                      </button>
+                    )}
+                    {columnKey !== 'review' && (
+                      <button 
+                        onClick={() => moveTask(task.id, 'review')}
+                        className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 px-2 py-0.5 rounded-md hover:bg-purple-200 dark:hover:bg-purple-800/40"
+                      >
+                        Review
+                      </button>
+                    )}
+                    {columnKey !== 'done' && (
+                      <button 
+                        onClick={() => moveTask(task.id, 'done')}
+                        className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-2 py-0.5 rounded-md hover:bg-green-200 dark:hover:bg-green-800/40"
+                      >
+                        Done
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Render task list
+  const renderTaskList = () => {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-900">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Task</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Assigned To</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Due Date</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            {tasks.map(task => (
+              <tr key={task.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{task.content}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{task.assignedTo}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <span className={cn(
+                    "px-2 py-1 text-xs rounded-full",
+                    task.status === 'todo' && "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+                    task.status === 'inProgress' && "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+                    task.status === 'review' && "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+                    task.status === 'done' && "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                  )}>
+                    {task.status === 'todo' && "To Do"}
+                    {task.status === 'inProgress' && "In Progress"}
+                    {task.status === 'review' && "Review"}
+                    {task.status === 'done' && "Done"}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <span className={cn(
+                    "px-2 py-1 text-xs rounded-full",
+                    task.priority === 'high' && "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+                    task.priority === 'medium' && "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+                    task.priority === 'low' && "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                  )}>
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {task.dueDate ? moment(task.dueDate).format('MMM DD, YYYY') : '-'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button 
+                    onClick={() => startEditingTask(task)}
+                    className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3"
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    onClick={() => deleteTask(task.id)}
+                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  // Simplified calendar view
+  const renderCalendarView = () => {
+    // Group tasks by date
+    const tasksByDate = {};
+    tasks.forEach(task => {
+      if (!task.dueDate) return;
+      
+      const dateStr = moment(task.dueDate).format('YYYY-MM-DD');
+      if (!tasksByDate[dateStr]) {
+        tasksByDate[dateStr] = [];
+      }
+      tasksByDate[dateStr].push(task);
+    });
+    
+    // Generate calendar days for the current month
+    const today = moment();
+    const monthStart = moment().startOf('month');
+    const monthEnd = moment().endOf('month');
+    const startDate = monthStart.clone().startOf('week');
+    const endDate = monthEnd.clone().endOf('week');
+    
+    const calendarDays = [];
+    let day = startDate.clone();
+    while (day.isSameOrBefore(endDate)) {
+      calendarDays.push(day.clone());
+      day.add(1, 'day');
+    }
+    
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+        <div className="text-xl font-bold text-center mb-4 text-gray-900 dark:text-white">
+          {today.format('MMMM YYYY')}
+        </div>
+        
+        <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700 mb-2">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="p-2 text-center text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800">
+              {day}
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700">
+          {calendarDays.map(day => {
+            const dateStr = day.format('YYYY-MM-DD');
+            const isToday = day.isSame(today, 'day');
+            const isCurrentMonth = day.isSame(today, 'month');
+            const dayTasks = tasksByDate[dateStr] || [];
+            
+            return (
+              <div 
+                key={dateStr}
+                className={cn(
+                  "min-h-[100px] p-1 bg-white dark:bg-gray-800 transition-colors",
+                  isToday && "bg-blue-50 dark:bg-blue-900/10",
+                  !isCurrentMonth && "opacity-50"
+                )}
+              >
+                <div className={cn(
+                  "text-right text-sm font-medium mb-1",
+                  isToday 
+                    ? "text-blue-600 dark:text-blue-400" 
+                    : "text-gray-700 dark:text-gray-300"
+                )}>
+                  {day.format('D')}
+                </div>
+                
+                <div className="space-y-1 overflow-y-auto max-h-[80px]">
+                  {dayTasks.map(task => (
+                    <div 
+                      key={task.id}
+                      onClick={() => startEditingTask(task)}
+                      className={cn(
+                        "text-xs p-1 rounded cursor-pointer truncate",
+                        task.priority === 'high' && "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+                        task.priority === 'medium' && "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+                        task.priority === 'low' && "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                      )}
+                    >
+                      {task.content}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="px-6 py-4">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Task Management</h1>
+        <p className="text-gray-600 dark:text-gray-400">Manage and organize your team's tasks and workflow</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+        <button
+          className={cn(
+            "py-2 px-4 text-sm font-medium",
+            activeTab === 'kanban' 
+              ? "border-b-2 border-primary-500 text-primary-600 dark:text-primary-400" 
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          )}
+          onClick={() => setActiveTab('kanban')}
+        >
+          Kanban Board
+        </button>
+        <button
+          className={cn(
+            "py-2 px-4 text-sm font-medium",
+            activeTab === 'list' 
+              ? "border-b-2 border-primary-500 text-primary-600 dark:text-primary-400" 
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          )}
+          onClick={() => setActiveTab('list')}
+        >
+          Task List
+        </button>
+        <button
+          className={cn(
+            "py-2 px-4 text-sm font-medium",
+            activeTab === 'calendar' 
+              ? "border-b-2 border-primary-500 text-primary-600 dark:text-primary-400" 
+              : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          )}
+          onClick={() => setActiveTab('calendar')}
+        >
+          Calendar
+        </button>
+      </div>
+
+      {/* Add New Task Form */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-3">Add New Task</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Task Description
+            </label>
+            <input
+              type="text"
+              name="content"
+              value={newTask.content}
+              onChange={handleInputChange}
+              placeholder="What needs to be done?"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Assigned To
+            </label>
+            <select
+              name="assignedTo"
+              value={newTask.assignedTo}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="">Select User</option>
+              {users.map(user => (
+                <option key={user.id} value={user.name}>{user.avatar} {user.name}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Due Date
+            </label>
+            <input
+              type="date"
+              name="dueDate"
+              value={newTask.dueDate}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Priority
+              </label>
+              <select
+                name="priority"
+                value={newTask.priority}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            
+            <div className="flex items-end">
+              <button
+                onClick={handleAddTask}
+                className="w-full p-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                Add Task
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Editing Task Modal */}
+      {editingTask && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Edit Task</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Task Description
+                </label>
+                <input
+                  type="text"
+                  name="content"
+                  value={editingTask.content}
+                  onChange={handleEditInputChange}
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Assigned To
+                </label>
+                <select
+                  name="assignedTo"
+                  value={editingTask.assignedTo}
+                  onChange={handleEditInputChange}
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                >
+                  <option value="">Select User</option>
+                  {users.map(user => (
+                    <option key={user.id} value={user.name}>{user.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  name="dueDate"
+                  value={editingTask.dueDate}
+                  onChange={handleEditInputChange}
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Priority
+                  </label>
+                  <select
+                    name="priority"
+                    value={editingTask.priority}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={editingTask.status}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="todo">To Do</option>
+                    <option value="inProgress">In Progress</option>
+                    <option value="review">Review</option>
+                    <option value="done">Done</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={() => setEditingTask(null)}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveTaskEdit}
+                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Content based on active tab */}
+      {activeTab === 'kanban' && renderKanbanBoard()}
+      {activeTab === 'list' && renderTaskList()}
+      {activeTab === 'calendar' && renderCalendarView()}
+    </div>
+  );
+};
+
+export default TaskManagement;

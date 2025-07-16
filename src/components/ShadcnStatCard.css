@@ -1,0 +1,62 @@
+/* ShadcnStatCard dark mode overrides */
+.dark .shadcn-stat-card {
+  background-color: #111827 !important; /* Dark gray for dark mode */
+  border-left: 4px solid currentColor !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.dark .shadcn-stat-card-blue {
+  border-color: #3b82f6 !important;
+}
+
+.dark .shadcn-stat-card-green {
+  border-color: #10b981 !important;
+}
+
+.dark .shadcn-stat-card-red {
+  border-color: #ef4444 !important;
+}
+
+.dark .shadcn-stat-card-purple {
+  border-color: #a855f7 !important;
+}
+
+.dark .shadcn-stat-card-yellow {
+  border-color: #f59e0b !important;
+}
+
+.dark .shadcn-stat-card .card-value {
+  color: white !important;
+}
+
+.dark .shadcn-stat-card .card-title {
+  color: #e5e7eb !important;
+}
+
+.dark .shadcn-stat-card .progress-bg {
+  background-color: #374151 !important;
+}
+
+.dark .shadcn-stat-card .icon-container {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .shadcn-stat-card-blue .progress-bar {
+  background-color: #3b82f6 !important;
+}
+
+.dark .shadcn-stat-card-green .progress-bar {
+  background-color: #10b981 !important;
+}
+
+.dark .shadcn-stat-card-red .progress-bar {
+  background-color: #ef4444 !important;
+}
+
+.dark .shadcn-stat-card-purple .progress-bar {
+  background-color: #a855f7 !important;
+}
+
+.dark .shadcn-stat-card-yellow .progress-bar {
+  background-color: #f59e0b !important;
+}

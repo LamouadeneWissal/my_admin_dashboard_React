@@ -1,0 +1,14 @@
+/* Global Dark Mode Overrides - Must be loaded last */
+.dark [data-theme="dark"] .card,
+.dark .card,
+html.dark [data-radix-popper-content-wrapper] .card {
+  background-color: #111827 !important;
+  color: white !important;
+}
+
+.dark [role="dialog"] .card,
+.dark [role="dialog"] .card-header,
+.dark [role="dialog"] .card-title {
+  background-color: #111827 !important;
+  color: white !important;
+}
