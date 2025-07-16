@@ -10,7 +10,7 @@ A comprehensive, feature-rich admin dashboard built with React.js, Redux Toolkit
 ## Project Overview
 
 ### Sign-in Page
-![Sign-in Page](src/assets/screenshots/sign-in-page%20.png)
+![Sign-in Page](src/assets/screenshots/sign-in-page.png)
 *Clean login interface with email and password validation*
 
 ### Dashboard (Light Mode)
@@ -22,7 +22,7 @@ A comprehensive, feature-rich admin dashboard built with React.js, Redux Toolkit
 *The same dashboard in dark mode for an alternative visual experience*
 
 ### Dashboard with Collapsed Sidebar
-![Dashboard - Collapsed Sidebar](src/assets/screenshots/dashboard-page-sidebar-collabsed.png)
+![Dashboard - Collapsed Sidebar](src/assets/screenshots/dashboard-page-sidebar-collapsed.png)
 *Dashboard with collapsed sidebar for maximum content space*
 
 ### Users Management
@@ -40,7 +40,7 @@ A comprehensive, feature-rich admin dashboard built with React.js, Redux Toolkit
 *Direct messaging system with conversation history*
 
 #### Announcements
-![Communication - Announcements](src/assets/screenshots/communication-annoucements-page.png)
+![Communication - Announcements](src/assets/screenshots/communication-announcements-page.png)
 *System-wide and targeted announcement management*
 
 #### Team Spaces
@@ -229,7 +229,7 @@ The dashboard integrates with multiple data sources:
 ### Dashboard Views
 
 #### Dashboard with Collapsed Sidebar
-![Dashboard - Sidebar Collapsed](src/assets/screenshots/dashboard-page-sidebar-collabsed.png)
+![Dashboard - Sidebar Collapsed](src/assets/screenshots/dashboard-page-sidebar-collapsed.png)
 *Dashboard with collapsed sidebar for maximum content space*
 
 #### Dashboard in Dark Mode
@@ -247,7 +247,7 @@ The dashboard integrates with multiple data sources:
 *Collaborative team spaces for discussions and file sharing*
 
 #### Announcements System
-![Announcements](src/assets/screenshots/communication-annoucements-page.png)
+![Announcements](src/assets/screenshots/communication-announcements-page.png)
 *Company-wide and targeted announcements*
 
 ### Advanced Features
